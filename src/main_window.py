@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout)
+from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 from PySide6.QtGui import QIcon
-from src.paths import ICON
+from .variables import ICON
+from .display import Display
 
 class MainWindow(QMainWindow):
     def __init__(self, parent: QWidget | None = None, *args, **kwargs) -> None:
@@ -16,6 +17,7 @@ class MainWindow(QMainWindow):
         # definitions
         self.cw = QWidget()
         self.v_layout = QVBoxLayout()
+        self.display = Display()
 
         # relations
         self.setCentralWidget(self.cw)
