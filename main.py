@@ -12,7 +12,7 @@ if __name__ == '__main__':
     label1.setStyleSheet('font-size: 100px; background-color: black; color: white;')
 
     # relations
-    window.v_layout.addWidget(label1)
+    window.addWidgetToVLayout(label1)
 
     # executions
     window.adjustFixedSize()
