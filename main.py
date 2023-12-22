@@ -8,6 +8,7 @@ if __name__ == '__main__':
     window = MainWindow()
 
     # relations
+    window.addWidgetToVLayout(window.info)
     window.addWidgetToVLayout(window.display)
 
     # executions
