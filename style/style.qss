@@ -1,0 +1,10 @@
+QMainWindow {
+    background-color: black;
+}
+QLabel {
+    color: aquamarine;
+}
+QLineEdit {
+    background-color: black;
+    color: aquamarine;
+}

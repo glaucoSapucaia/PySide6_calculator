@@ -3,6 +3,7 @@ from pathlib import Path
 # paths
 BASE_DIR = Path(__file__).parent.parent
 ICON = BASE_DIR / 'files' / 'kerismaker_icon.png'
+CSS = BASE_DIR / 'src' / 'custom.css'
 
 #variables
 # font size
@@ -15,3 +16,6 @@ TEXT_MARGIN = 12
 
 # window size
 MINIMUN_WIDTH = 400
+
+# qss style
+QSS_STYLE = BASE_DIR / 'style' / 'style.qss'
