@@ -40,7 +40,7 @@ class ButtonsGrid(QGridLayout):
         self._calculation = None
         self._makeGridMask()
     
-    # getters and setter
+    # getters and setters
     @property
     def calculation(self):
         return self._calculation
@@ -54,26 +54,41 @@ class ButtonsGrid(QGridLayout):
     def _makeGridMask(self):
         for i, row in enumerate(self._grid_mask):
             for j, btn in enumerate(row):
-                if isNumOrDot(btn):
-                    button = ButtonNumber(btn)
-                else:
+                if not isNumOrDot(btn):
                     button = ButtonText(btn)
+                    self.addWidget(button, i, j)
+                    self._connectNotNumberBtnClicked(button)
+                else:
+                    button = ButtonNumber(btn)
+                    self.addWidget(button, i, j)
+                    slot = self._makeBtnSlot(self._sentBtnTextToDisplay, button)
+                    self._connectBtnClicked(button, slot)
+                
+    # btn connection
+    def _connectBtnClicked(self, btn: QPushButton, slot: Slot):
+        btn.clicked.connect(slot)
 
-                button_slot = self.makeBtnSlot(self.sentBtnTextToDisplay, button)
-                button.clicked.connect(button_slot)
-                self.addWidget(button, i, j)
+    def _connectNotNumberBtnClicked(self, btn: ButtonText):
+        text = btn.text()
+
+        if text == 'C':
+            self._connectBtnClicked(btn, self._clear)
 
     # btn slot
-    def makeBtnSlot(self, func, *args, **kwargs):
+    def _makeBtnSlot(self, func, *args, **kwargs):
         @Slot()
         def _Slot():
             func(*args, **kwargs)
         return _Slot
 
     # info label text
-    def sentBtnTextToDisplay(self, button: QPushButton):
+    def _sentBtnTextToDisplay(self, button: QPushButton):
         btn_text = button.text()
         new_display_value = self.display.text() + btn_text
         if not isValidNumber(new_display_value):
             return
         self.display.insert(btn_text)
+
+    # display clear
+    def _clear(self):
+        self.display.clear()
