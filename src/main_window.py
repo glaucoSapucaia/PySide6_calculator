@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.v_layout = QVBoxLayout()
         self.info = Info()
         self.display = Display()
-        self.btn_grid = ButtonsGrid()
+        self.btn_grid = ButtonsGrid(self.display)
 
         # relations
         self.setCentralWidget(self.cw)
