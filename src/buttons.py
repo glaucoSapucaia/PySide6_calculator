@@ -38,6 +38,10 @@ class ButtonsGrid(QGridLayout):
         self.display = display
         self.info = info
         self._calculation = None
+        self._calculation_initial = 'calculation'
+        self._calculation_left = None
+        self._calculation_right = None
+        self._calculation_op = None
         self._makeGridMask()
     
     # getters and setters
@@ -74,6 +78,12 @@ class ButtonsGrid(QGridLayout):
         if text == 'C':
             self._connectBtnClicked(btn, self._clear)
 
+        if text in '+-/*':
+            self._connectBtnClicked(
+                btn,
+                self._makeBtnSlot(self._operatorClicked, btn)
+            )
+
     # btn slot
     def _makeBtnSlot(self, func, *args, **kwargs):
         @Slot()
@@ -91,4 +101,22 @@ class ButtonsGrid(QGridLayout):
 
     # display clear
     def _clear(self):
+        self._calculation_left = None
+        self._calculation_right = None
+        self._calculation_op = None
+        self.calculation = self._calculation_initial
         self.display.clear()
+
+    def _operatorClicked(self, button: ButtonText):
+        btn_text = button.text()
+        display_text = self.display.text()
+        self.display.clear()
+
+        if not isValidNumber(display_text) and self._calculation_left is None:
+            return
+        
+        if self._calculation_left is None:
+            self._calculation_left = float(display_text)
+
+        self._calculation_op = btn_text
+        self.calculation = f'{self._calculation_left} {self._calculation_op} ??'
