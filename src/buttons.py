@@ -84,6 +84,9 @@ class ButtonsGrid(QGridLayout):
                 self._makeBtnSlot(self._operatorClicked, btn)
             )
 
+        if text == '=':
+            self._connectBtnClicked(btn, self._eq)
+
     # btn slot
     def _makeBtnSlot(self, func, *args, **kwargs):
         @Slot()
@@ -120,3 +123,24 @@ class ButtonsGrid(QGridLayout):
 
         self._calculation_op = btn_text
         self.calculation = f'{self._calculation_left} {self._calculation_op} ??'
+    
+    def _eq(self):
+        display_text = self.display.text()
+
+        if not isValidNumber(display_text):
+            print('nada no display')
+            return  
+        
+        self._calculation_right = float(display_text)
+        self.calculation = f'{self._calculation_left} {self._calculation_op} {self._calculation_right}'
+
+        result = 0.0
+        try:
+            result = eval(self.calculation)
+        except ZeroDivisionError:
+            ...
+        
+        self.display.clear()
+        self.info.setText(f'{self.calculation} = {result}')
+        self._calculation_left = result
+        self._calculation_right = None
