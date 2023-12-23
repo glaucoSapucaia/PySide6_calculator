@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QPushButton, QGridLayout
 from PySide6.QtCore import Slot
 from .variables import MEDIUM_FONT_SIZE
 from .display import Display
+from .tools.utils import isNumOrDot, isValidNumber
 
 class ButtonNumber(QPushButton):
     def __init__(self, *args, **kwargs):
@@ -36,13 +37,13 @@ class ButtonsGrid(QGridLayout):
     def _makeGridMask(self):
         for i, row in enumerate(self._grid_mask):
             for j, btn in enumerate(row):
-                if btn in '0123456789.':
+                if isNumOrDot(btn):
                     button = ButtonNumber(btn)
-                    button_slot = self.makeBtnSlot(self.sentBtnTextToDisplay, button)
-                    button.clicked.connect(button_slot)
                 else:
                     button = ButtonText(btn)
 
+                button_slot = self.makeBtnSlot(self.sentBtnTextToDisplay, button)
+                button.clicked.connect(button_slot)
                 self.addWidget(button, i, j)
 
     def makeBtnSlot(self, func, *args, **kwargs):
@@ -53,4 +54,7 @@ class ButtonsGrid(QGridLayout):
 
     def sentBtnTextToDisplay(self, button: QPushButton):
         btn_text = button.text()
+        new_display_value = self.display.text() + btn_text
+        if not isValidNumber(new_display_value):
+            return
         self.display.insert(btn_text)
