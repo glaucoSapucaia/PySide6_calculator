@@ -5,6 +5,16 @@ QLabel {
     color: aquamarine;
 }
 QLineEdit {
+    background-color: rgb(33, 32, 32);
+    color: aquamarine;
+    border-radius: 10px;
+}
+QPushButton {
     background-color: black;
     color: aquamarine;
+    border-radius: 10px;
+}
+QPushButton:hover {
+    background-color: aqua;
+    color: black;
 }

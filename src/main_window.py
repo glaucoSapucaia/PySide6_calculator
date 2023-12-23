@@ -3,6 +3,7 @@ from PySide6.QtGui import QIcon
 from .variables import ICON
 from .display import Display
 from .info import Info
+from .buttons import Button
 
 class MainWindow(QMainWindow):
     def __init__(self, parent: QWidget | None = None, *args, **kwargs) -> None:
@@ -20,6 +21,12 @@ class MainWindow(QMainWindow):
         self.v_layout = QVBoxLayout()
         self.info = Info()
         self.display = Display()
+        # btns
+        self.btn1 = Button('My button')
+        self.btn2 = Button('My button')
+        self.btn3 = Button('My button')
+        self.btn4 = Button('My button')
+
 
         # relations
         self.setCentralWidget(self.cw)

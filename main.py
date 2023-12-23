@@ -16,6 +16,10 @@ if __name__ == '__main__':
     # relations
     window.addWidgetToVLayout(window.info)
     window.addWidgetToVLayout(window.display)
+    window.addWidgetToVLayout(window.btn1)
+    window.addWidgetToVLayout(window.btn2)
+    window.addWidgetToVLayout(window.btn3)
+    window.addWidgetToVLayout(window.btn4)
 
     # executions
     window.adjustFixedSize()
