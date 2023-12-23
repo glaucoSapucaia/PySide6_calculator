@@ -2,7 +2,7 @@ from pathlib import Path
 
 # paths
 BASE_DIR = Path(__file__).parent.parent
-ICON = BASE_DIR / 'files' / 'kerismaker_icon.png'
+ICON = BASE_DIR / 'imgs' / 'kerismaker_icon.png'
 CSS = BASE_DIR / 'src' / 'custom.css'
 
 #variables

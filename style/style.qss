@@ -1,20 +1,38 @@
+/* main window */
 QMainWindow {
     background-color: black;
 }
+
+/* label */
 QLabel {
-    color: aquamarine;
+    color: aqua;
 }
+
+/* line edit */
 QLineEdit {
     background-color: rgb(33, 32, 32);
     color: aquamarine;
     border-radius: 10px;
 }
-QPushButton {
+
+/* number btns */
+QPushButton#btn-number {
     background-color: black;
     color: aquamarine;
-    border-radius: 10px;
 }
-QPushButton:hover {
+QPushButton#btn-number:hover {
     background-color: aqua;
     color: black;
+    border-radius: 10px;
+}
+
+/* text btns */
+QPushButton#btn-text {
+    background-color: aquamarine;
+    color: black;
+}
+QPushButton#btn-text:hover {
+    background-color: aqua;
+    color: black;
+    border-radius: 10px;
 }
