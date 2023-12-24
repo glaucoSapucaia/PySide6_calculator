@@ -79,6 +79,9 @@ class ButtonsGrid(QGridLayout):
         if text == 'C':
             self._connectBtnClicked(btn, self._clear)
 
+        if text == '◀':
+            self._connectBtnClicked(btn, self.display.backspace)
+
         if text in '+-/*^':
             self._connectBtnClicked(
                 btn,
@@ -129,7 +132,6 @@ class ButtonsGrid(QGridLayout):
         display_text = self.display.text()
 
         if not isValidNumber(display_text):
-            print('nada no display')
             return  
         
         self._calculation_right = float(display_text)
