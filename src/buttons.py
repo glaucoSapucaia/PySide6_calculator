@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .display import Display
     from .info import Info
+    from .main_window import MainWindow
 
 class ButtonNumber(QPushButton):
     def __init__(self, *args, **kwargs):
@@ -26,7 +27,7 @@ class ButtonText(QPushButton):
         self.setObjectName('btn-text')
 
 class ButtonsGrid(QGridLayout):
-    def __init__(self, display: 'Display', info: 'Info', *args, **kwargs) -> None:
+    def __init__(self, display: 'Display', info: 'Info', window: 'MainWindow', *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self._grid_mask = [
@@ -38,6 +39,7 @@ class ButtonsGrid(QGridLayout):
         ]
         self.display = display
         self.info = info
+        self.window = window
         self._calculation = None
         self._calculation_initial = 'calculation'
         self._calculation_left = None
@@ -73,22 +75,23 @@ class ButtonsGrid(QGridLayout):
     def _connectBtnClicked(self, btn: QPushButton, slot: Slot):
         btn.clicked.connect(slot)
 
+    # operations
     def _connectNotNumberBtnClicked(self, btn: ButtonText):
         text = btn.text()
 
         if text == 'C':
             self._connectBtnClicked(btn, self._clear)
 
-        if text == '◀':
+        elif text == '◀':
             self._connectBtnClicked(btn, self.display.backspace)
 
-        if text in '+-/*^':
+        elif text in '+-/*^':
             self._connectBtnClicked(
                 btn,
                 self._makeBtnSlot(self._operatorClicked, btn)
             )
 
-        if text == '=':
+        elif text == '=':
             self._connectBtnClicked(btn, self._eq)
 
     # btn slot
@@ -103,6 +106,7 @@ class ButtonsGrid(QGridLayout):
         btn_text = button.text()
         new_display_value = self.display.text() + btn_text
         if not isValidNumber(new_display_value):
+            self._infoBox('Operação inválida!')
             return
         self.display.insert(btn_text)
 
@@ -114,12 +118,14 @@ class ButtonsGrid(QGridLayout):
         self.calculation = self._calculation_initial
         self.display.clear()
 
+    # operation logic
     def _operatorClicked(self, button: ButtonText):
         btn_text = button.text()
         display_text = self.display.text()
         self.display.clear()
 
         if not isValidNumber(display_text) and self._calculation_left is None:
+            self._infoBox('Operação inválida')
             return
         
         if self._calculation_left is None:
@@ -128,10 +134,12 @@ class ButtonsGrid(QGridLayout):
         self._calculation_op = btn_text
         self.calculation = f'{self._calculation_left} {self._calculation_op} ??'
     
+    # result calculation
     def _eq(self):
         display_text = self.display.text()
 
         if not isValidNumber(display_text):
+            self._infoBox('Operação inválida!')
             return  
         
         self._calculation_right = float(display_text)
@@ -144,9 +152,9 @@ class ButtonsGrid(QGridLayout):
             else:
                 result = eval(self.calculation)
         except ZeroDivisionError:
-            ...
+            self._infoBox('Impossível dividir por zero!')
         except OverflowError:
-            ...
+            self._infoBox('Número muito grande!')
         
         self.display.clear()
         self.info.setText(f'{self.calculation} = {result}')
@@ -155,3 +163,53 @@ class ButtonsGrid(QGridLayout):
 
         if result == 'error':
             self._clear()
+
+    # error boxes
+    def _errorBox(self, msg):
+        msg_box = self.window.makeMsgBox()
+        msg_box.setText(msg)
+        msg_box.setIcon(msg_box.Icon.Critical)
+
+        # description
+        msg_box.setInformativeText('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mihi, inquam, qui te id ipsum rogavi?')
+
+        # btns
+        msg_box.setStandardButtons(
+            msg_box.StandardButton.Ok |
+            msg_box.StandardButton.Cancel |
+            msg_box.StandardButton.Close
+        )
+        msg_box.button(msg_box.StandardButton.Ok).setText('OK😎')
+        msg_box.button(msg_box.StandardButton.Ok).setStyleSheet('font-size:20px; background-color: aqua;' 
+                                                                'border-radius: 5px; padding: 5px;')
+        
+        msg_box.button(msg_box.StandardButton.Cancel).setText('Cancelar😉')
+        msg_box.button(msg_box.StandardButton.Cancel).setStyleSheet('font-size:20px; background-color: aqua;' 
+                                                                'border-radius: 5px; padding: 5px;')
+        
+        msg_box.button(msg_box.StandardButton.Close).setText('Fechar😁')
+        msg_box.button(msg_box.StandardButton.Close).setStyleSheet('font-size:20px; background-color: aqua;' 
+                                                                'border-radius: 5px; padding: 5px;')
+
+        result = msg_box.exec()
+        if result == msg_box.StandardButton.Ok:
+            print('Ok')
+        elif result == msg_box.StandardButton.Cancel:
+            print('Cancel')
+        elif result == msg_box.StandardButton.Close:
+            print('Close')
+    
+    def _infoBox(self, msg):
+        msg_box = self.window.makeMsgBox()
+        msg_box.setText(msg)
+        msg_box.setIcon(msg_box.Icon.Information)
+
+        # btns
+        msg_box.setStandardButtons(
+            msg_box.StandardButton.Ok
+        )
+        msg_box.button(msg_box.StandardButton.Ok).setText('OK😎')
+        msg_box.button(msg_box.StandardButton.Ok).setStyleSheet('font-size:20px; background-color: aqua;' 
+                                                                'border-radius: 5px; padding: 5px;')
+        
+        msg_box.exec()

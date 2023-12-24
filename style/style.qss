@@ -36,3 +36,9 @@ QPushButton#btn-text:hover {
     color: black;
     border-radius: 10px;
 }
+
+/* error box */
+QMessageBox {
+    background-color: black;
+    color: aqua;
+}

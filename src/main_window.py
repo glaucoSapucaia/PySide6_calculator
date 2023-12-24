@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
+from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QMessageBox
 from PySide6.QtGui import QIcon
 from .variables import ICON
 from .display import Display
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.v_layout = QVBoxLayout()
         self.info = Info()
         self.display = Display()
-        self.btn_grid = ButtonsGrid(self.display, self.info)
+        self.btn_grid = ButtonsGrid(self.display, self.info, self)
 
         # relations
         self.setCentralWidget(self.cw)
@@ -35,3 +35,7 @@ class MainWindow(QMainWindow):
     def adjustFixedSize(self):
         self.adjustSize()
         self.setFixedSize(self.width(), self.height())
+
+    # make errors boxes
+    def makeMsgBox(self):
+        return QMessageBox(self)
