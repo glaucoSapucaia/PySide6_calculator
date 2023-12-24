@@ -13,3 +13,6 @@ def isValidNumber(value: str) -> bool:
     except ValueError:
         ...
     return valid
+
+def isEmpty(value: str) -> bool:
+    return len(value) == 0

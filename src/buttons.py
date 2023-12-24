@@ -61,6 +61,8 @@ class ButtonsGrid(QGridLayout):
     def _makeGridMask(self):
         # signals
         self.display.eq_signal.connect(lambda: print(123))
+        self.display.delete_signal.connect(self.display.backspace)
+        self.display.esc_signal.connect(lambda: print(123))
 
         for i, row in enumerate(self._grid_mask):
             for j, btn in enumerate(row):
