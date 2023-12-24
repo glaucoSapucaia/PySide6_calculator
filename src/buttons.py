@@ -58,30 +58,30 @@ class ButtonsGrid(QGridLayout):
         self.info.setText(value)
 
     # provisional method
-    def provisional(self, *args, **kwargs):
-        print(
-            'Sinal -', 'args -', args, 'kwargs -', kwargs
-        )
+    # def provisional(self, *args, **kwargs):
+    #     print(
+    #         'Sinal -', 'args -', args, 'kwargs -', kwargs
+    #     )
 
     # btn grid
     def _makeGridMask(self):
         # signals
-        self.display.eq_signal.connect(self.provisional)
+        self.display.eq_signal.connect(self._eq)
         self.display.delete_signal.connect(self.display.backspace)
-        self.display.esc_signal.connect(self.provisional)
-        self.display.num_or_dot_signal.connect(self.provisional)
-        self.display.op_signal.connect(self.provisional)
+        self.display.esc_signal.connect(self._clear)
+        self.display.num_or_dot_signal.connect(self._sentBtnTextToDisplay)
+        self.display.op_signal.connect(self._operatorBtnAndText)
 
         for i, row in enumerate(self._grid_mask):
             for j, btn in enumerate(row):
                 if not isNumOrDot(btn):
                     button = ButtonText(btn)
                     self.addWidget(button, i, j)
-                    self._connectNotNumberBtnClicked(button)
+                    self._connectNotNumberBtnClicked(btn=button, text=btn)
                 else:
                     button = ButtonNumber(btn)
                     self.addWidget(button, i, j)
-                    slot = self._makeBtnSlot(self._sentBtnTextToDisplay, button)
+                    slot = self._makeBtnSlot(self._sentBtnTextToDisplay, btn)
                     self._connectBtnClicked(button, slot)
                 
     # btn connection
@@ -89,22 +89,22 @@ class ButtonsGrid(QGridLayout):
         btn.clicked.connect(slot)
 
     # operations
-    def _connectNotNumberBtnClicked(self, btn: ButtonText):
-        text = btn.text()
+    def _connectNotNumberBtnClicked(self, btn: ButtonText, text: str):
+        text_btn = btn.text()
 
-        if text == 'C':
+        if text_btn == 'C':
             self._connectBtnClicked(btn, self._clear)
 
-        elif text == '◀':
+        elif text_btn == '◀':
             self._connectBtnClicked(btn, self.display.backspace)
 
-        elif text in '+-/*^':
+        elif text_btn in '+-/*^':
             self._connectBtnClicked(
                 btn,
-                self._makeBtnSlot(self._operatorClicked, btn)
+                self._makeBtnSlot(self._operatorBtnAndText, text)
             )
 
-        elif text == '=':
+        elif text_btn == '=':
             self._connectBtnClicked(btn, self._eq)
 
     # btn slot
@@ -115,15 +115,16 @@ class ButtonsGrid(QGridLayout):
         return _Slot
 
     # info label text
-    def _sentBtnTextToDisplay(self, button: QPushButton):
-        btn_text = button.text()
-        new_display_value = self.display.text() + btn_text
+    @Slot()
+    def _sentBtnTextToDisplay(self, text):
+        new_display_value = self.display.text() + text
         if not isValidNumber(new_display_value):
             self._infoBox('Operação inválida!')
             return
-        self.display.insert(btn_text)
+        self.display.insert(text)
 
     # display clear
+    @Slot()
     def _clear(self):
         self._calculation_left = None
         self._calculation_right = None
@@ -132,8 +133,8 @@ class ButtonsGrid(QGridLayout):
         self.display.clear()
 
     # operation logic
-    def _operatorClicked(self, button: ButtonText):
-        btn_text = button.text()
+    @Slot()
+    def _operatorBtnAndText(self,  text: str):
         display_text = self.display.text()
         self.display.clear()
 
@@ -144,12 +145,17 @@ class ButtonsGrid(QGridLayout):
         if self._calculation_left is None:
             self._calculation_left = float(display_text)
 
-        self._calculation_op = btn_text
+        self._calculation_op = text
         self.calculation = f'{self._calculation_left} {self._calculation_op} ??'
     
     # result calculation
+    @Slot()
     def _eq(self):
         display_text = self.display.text()
+
+        if self._calculation_op is None:
+            self._infoBox('Operação inválida!')
+            return              
 
         if not isValidNumber(display_text) and self._calculation_right is None:
             self._infoBox('Operação inválida!')
