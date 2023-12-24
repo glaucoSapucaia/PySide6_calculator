@@ -2,13 +2,14 @@ from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import QLineEdit
 from PySide6.QtCore import Qt, Signal
 from .variables import BIG_FONT_SIZE, TEXT_MARGIN, MINIMUN_WIDTH
-from .tools.utils import isEmpty
+from .tools.utils import isEmpty, isNumOrDot
 
 class Display(QLineEdit):
     # my signals
     eq_signal = Signal()
     delete_signal = Signal()
     esc_signal = Signal()
+    num_or_dot_signal = Signal(str)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -54,6 +55,9 @@ class Display(QLineEdit):
         if isEmpty(key_text):
             return event.ignore()
 
-        print('texto -', key_text)
+        if isNumOrDot(key_text):
+            self.num_or_dot_signal.emit(key_text)
+            print(key_text)
+
         # disables all keys (return super OFF)
         # return super().keyPressEvent(event)

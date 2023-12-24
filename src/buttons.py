@@ -63,6 +63,7 @@ class ButtonsGrid(QGridLayout):
         self.display.eq_signal.connect(lambda: print(123))
         self.display.delete_signal.connect(self.display.backspace)
         self.display.esc_signal.connect(lambda: print(123))
+        self.display.num_or_dot_signal.connect(lambda: print())
 
         for i, row in enumerate(self._grid_mask):
             for j, btn in enumerate(row):
