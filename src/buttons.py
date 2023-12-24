@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QPushButton, QGridLayout
 from PySide6.QtCore import Slot
 from .variables import MEDIUM_FONT_SIZE
-from .tools.utils import isNumOrDot, isValidNumber
+from .tools.utils import isNumOrDot, isValidNumber, checkInt
 import math
 
 from typing import TYPE_CHECKING
@@ -98,6 +98,9 @@ class ButtonsGrid(QGridLayout):
         elif text_btn == '◀':
             self._connectBtnClicked(btn, self.display.backspace)
 
+        elif text_btn == '🤔':
+            self._connectBtnClicked(btn, self._negativeTransform)
+
         elif text_btn in '+-/*^':
             self._connectBtnClicked(
                 btn,
@@ -132,6 +135,17 @@ class ButtonsGrid(QGridLayout):
         self.calculation = self._calculation_initial
         self.display.clear()
 
+    # negative transform
+    @Slot()
+    def _negativeTransform(self):
+        display_text = self.display.text()
+        if not isValidNumber(display_text):
+            self._infoBox('Operação inválida!')
+            return
+        
+        new_number = -checkInt(display_text)
+        self.display.setText(str(new_number))
+
     # operation logic
     @Slot()
     def _operatorBtnAndText(self,  text: str):
@@ -143,7 +157,7 @@ class ButtonsGrid(QGridLayout):
             return
         
         if self._calculation_left is None:
-            self._calculation_left = float(display_text)
+            self._calculation_left = checkInt(display_text)
 
         self._calculation_op = text
         self.calculation = f'{self._calculation_left} {self._calculation_op} ??'
@@ -161,7 +175,7 @@ class ButtonsGrid(QGridLayout):
             self._infoBox('Operação inválida!')
             return  
         
-        self._calculation_right = float(display_text)
+        self._calculation_right = checkInt(display_text)
         self.calculation = f'{self._calculation_left} {self._calculation_op} {self._calculation_right}'
 
         result = 'error'
