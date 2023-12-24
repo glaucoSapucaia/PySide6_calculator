@@ -57,13 +57,20 @@ class ButtonsGrid(QGridLayout):
         self._calculation = value
         self.info.setText(value)
 
+    # provisional method
+    def provisional(self, *args, **kwargs):
+        print(
+            'Sinal -', 'args -', args, 'kwargs -', kwargs
+        )
+
     # btn grid
     def _makeGridMask(self):
         # signals
-        self.display.eq_signal.connect(lambda: print(123))
+        self.display.eq_signal.connect(self.provisional)
         self.display.delete_signal.connect(self.display.backspace)
-        self.display.esc_signal.connect(lambda: print(123))
-        self.display.num_or_dot_signal.connect(lambda: print())
+        self.display.esc_signal.connect(self.provisional)
+        self.display.num_or_dot_signal.connect(self.provisional)
+        self.display.op_signal.connect(self.provisional)
 
         for i, row in enumerate(self._grid_mask):
             for j, btn in enumerate(row):
