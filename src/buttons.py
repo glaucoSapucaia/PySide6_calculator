@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QPushButton, QGridLayout
 from PySide6.QtCore import Slot
 from .variables import MEDIUM_FONT_SIZE
 from .tools.utils import isNumOrDot, isValidNumber
+import math
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -78,7 +79,7 @@ class ButtonsGrid(QGridLayout):
         if text == 'C':
             self._connectBtnClicked(btn, self._clear)
 
-        if text in '+-/*':
+        if text in '+-/*^':
             self._connectBtnClicked(
                 btn,
                 self._makeBtnSlot(self._operatorClicked, btn)
@@ -134,13 +135,21 @@ class ButtonsGrid(QGridLayout):
         self._calculation_right = float(display_text)
         self.calculation = f'{self._calculation_left} {self._calculation_op} {self._calculation_right}'
 
-        result = 0.0
+        result = 'error'
         try:
-            result = eval(self.calculation)
+            if '^' in self.calculation:
+                result = math.pow(self._calculation_left, self._calculation_right)
+            else:
+                result = eval(self.calculation)
         except ZeroDivisionError:
+            ...
+        except OverflowError:
             ...
         
         self.display.clear()
         self.info.setText(f'{self.calculation} = {result}')
         self._calculation_left = result
         self._calculation_right = None
+
+        if result == 'error':
+            self._clear()

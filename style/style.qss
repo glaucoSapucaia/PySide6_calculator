@@ -5,7 +5,7 @@ QMainWindow {
 
 /* label */
 QLabel {
-    color: aqua;
+    color: whitesmoke;
 }
 
 /* line edit */
