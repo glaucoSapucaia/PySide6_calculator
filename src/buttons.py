@@ -143,7 +143,7 @@ class ButtonsGrid(QGridLayout):
     def _eq(self):
         display_text = self.display.text()
 
-        if not isValidNumber(display_text):
+        if not isValidNumber(display_text) and self._calculation_right is None:
             self._infoBox('Operação inválida!')
             return  
         

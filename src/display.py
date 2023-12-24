@@ -32,9 +32,9 @@ class Display(QLineEdit):
         key = event.key()
         KEYS = Qt.Key
 
-        is_enter = key in [KEYS.Key_Enter, KEYS.Key_Return]
+        is_enter = key in [KEYS.Key_Enter, KEYS.Key_Return, KEYS.Key_Equal]
         is_delete = key in [KEYS.Key_Backspace, KEYS.Key_Delete]
-        is_esc = key in [KEYS.Key_Escape]
+        is_esc = key in [KEYS.Key_Escape, KEYS.Key_C]
 
         if is_enter:
             self.eq_signal.emit()
