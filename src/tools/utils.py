@@ -17,8 +17,8 @@ def isValidNumber(value: str) -> bool:
 def isEmpty(value: str) -> bool:
     return len(value) == 0
 
-def checkInt(str):
-    number = float(str)
+def checkInt(value: str):
+    number = float(value)
     if number.is_integer():
         number = int(number)
     

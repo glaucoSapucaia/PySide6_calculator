@@ -16,6 +16,7 @@ class Display(QLineEdit):
         super().__init__(*args, **kwargs)
 
         self.configStyle()
+        self.setFocus()
 
     def configStyle(self):
         self.setStyleSheet(f'font-size: {BIG_FONT_SIZE}px')
@@ -27,6 +28,10 @@ class Display(QLineEdit):
 
         self.setMinimumWidth(MINIMUN_WIDTH)
         self.setPlaceholderText('Sua calculadora')
+
+    def backspace(self) -> None:
+        self.setFocus()
+        return super().backspace()
 
     # events and signals
     def keyPressEvent(self, event: QKeyEvent) -> None:

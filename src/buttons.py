@@ -120,6 +120,7 @@ class ButtonsGrid(QGridLayout):
     # info label text
     @Slot()
     def _sentBtnTextToDisplay(self, text):
+        self.display.setFocus()
         new_display_value = self.display.text() + text
         if not isValidNumber(new_display_value):
             self._infoBox('Operação inválida!')
@@ -129,6 +130,7 @@ class ButtonsGrid(QGridLayout):
     # display clear
     @Slot()
     def _clear(self):
+        self.display.setFocus()
         self._calculation_left = None
         self._calculation_right = None
         self._calculation_op = None
@@ -138,6 +140,7 @@ class ButtonsGrid(QGridLayout):
     # negative transform
     @Slot()
     def _negativeTransform(self):
+        self.display.setFocus()
         display_text = self.display.text()
         if not isValidNumber(display_text):
             self._infoBox('Operação inválida!')
@@ -149,6 +152,7 @@ class ButtonsGrid(QGridLayout):
     # operation logic
     @Slot()
     def _operatorBtnAndText(self,  text: str):
+        self.display.setFocus()
         display_text = self.display.text()
         self.display.clear()
 
@@ -165,6 +169,7 @@ class ButtonsGrid(QGridLayout):
     # result calculation
     @Slot()
     def _eq(self):
+        self.display.setFocus()
         display_text = self.display.text()
 
         if self._calculation_op is None:
@@ -180,8 +185,9 @@ class ButtonsGrid(QGridLayout):
 
         result = 'error'
         try:
-            if '^' in self.calculation:
+            if '^' in self.calculation and isinstance(self._calculation_left, (int, float)):
                 result = math.pow(self._calculation_left, self._calculation_right)
+                result = checkInt(str(result))
             else:
                 result = eval(self.calculation)
         except ZeroDivisionError:
